@@ -1,0 +1,12 @@
+# Handlers of the file_server role
+#
+---
+# The handler is a task that will be executed only if a task notifies it.
+# The handler is a separate file in the handlers directory.
+
+# Restart the NFS server
+- name: restart nfs-kernel-server
+  service:
+    name: nfs-kernel-server
+    state: restarted
+# The handler for the NFS server restart is defined in the handlers/main.yml file of the file_server role.

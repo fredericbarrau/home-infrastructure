@@ -13,6 +13,7 @@
     state: present
   with_items:
     - apt-transport-https
+    - avahi-daemon # bonjour for ubuntu
     - ca-certificates
     - curl
     - software-properties-common
@@ -35,3 +36,13 @@
     owner: root
     group: root
     mode: 0644
+
+# Configure avahi-daemon
+- name: Configure avahi-daemon
+  template:
+    src: avahi-daemon.conf.j2
+    dest: /etc/avahi/avahi-daemon.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart avahi-daemon

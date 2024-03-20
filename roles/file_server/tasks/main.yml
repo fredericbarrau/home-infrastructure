@@ -1,0 +1,36 @@
+---
+# Tasks of the file_server role
+# This role will :
+# - install the NFS server and configure it to share the /var/nfs directory.
+# - create the /var/nfs directory.
+# - copy the /etc/exports file to the NFS server.
+# - restart the NFS server.
+# - install the necessary packages.
+
+- name: Install the necessary packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - nfs-kernel-server
+    - nfs-common
+
+# Loop over the nfs_dirs variable to create the directories
+- name: Create the NFS directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: nobody
+    group: nogroup
+    mode: 0777
+  with_items:
+    - "{{ nfs_dirs }}"
+
+- name: Copy the /etc/exports file to the NFS server
+  template:
+    src: exports.j2
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart nfs-kernel-server
