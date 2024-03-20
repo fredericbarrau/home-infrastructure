@@ -1,0 +1,37 @@
+---
+# The common rules for all servers on our infrastructure:
+# Setup:
+# - Update the system automatically
+# - Install the necessary packages
+# - Configure the timezone
+# - Configure the hostname
+# - Configure the unattended-upgrades
+
+- name: Install the necessary packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - software-properties-common
+    - logrotate
+    - unattended-upgrades
+
+- name: Configure the timezone
+  timezone:
+    name: "{{ timezone }}"
+
+- name: Configure the hostname
+  hostname:
+    name: "{{ hostname }}"
+  notify: restart hostname
+
+- name: Configure the unattended-upgrades
+  template:
+    src: 50unattended-upgrades.j2
+    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+    owner: root
+    group: root
+    mode: 0644

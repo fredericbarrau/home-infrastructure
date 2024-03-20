@@ -1,0 +1,8 @@
+# Playbook for file server
+# ---
+
+- hosts: file_server
+  become: True
+  roles:
+    - common
+    - file_server

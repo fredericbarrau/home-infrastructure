@@ -1,0 +1,2 @@
+[file_server]
+fredocloude ansible_host=fredocloude.barrau.bzh ansible_user=ansible ansible_ssh_private_key_file=~/.ssh/id_rsa

@@ -1,0 +1,8 @@
+# Variables for the host fredocloude
+# This file is encrypted with ansible-vault
+
+# The hostname of the host
+hostname: fredocloude
+
+# The timezone of the host
+timezone: Europe/Paris
