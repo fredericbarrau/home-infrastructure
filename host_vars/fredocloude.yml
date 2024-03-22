@@ -6,3 +6,11 @@ hostname: fredocloude
 
 # The timezone of the host
 timezone: Europe/Paris
+
+# The NFS directories to create
+nfs_dirs:
+  - /var/nfs
+
+# The samba users
+samba_users:
+  - fredericbarrau

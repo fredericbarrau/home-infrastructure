@@ -1,5 +1,6 @@
 ---
 # Tasks of the file_server role
+
 # This role will :
 # - install the NFS server and configure it to share the /var/nfs directory.
 # - create the /var/nfs directory.
@@ -34,3 +35,44 @@
     group: root
     mode: 0644
   notify: restart nfs-kernel-server
+# The following will :
+# - install the Samba server and configure it to share the /var/samba directory.
+# - create the /var/samba directory.
+# - install the necessary packages.
+# - copy the smb.conf file to the Samba server.
+
+- name: Install the necessary packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - samba
+    - samba-common
+
+# add the users contained in the samba_users variable to the sambashare group
+- name: Add the users to the sambashare group
+  user:
+    name: "{{ item }}"
+    groups: sambashare
+    append: yes
+  with_items:
+    - "{{ samba_users }}"
+
+- name: Copy the smb.conf file to the Samba server
+  template:
+    src: smb.conf.j2
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart samba
+# Avahi configuration for samba
+
+- name: Copy the avahi configuration file
+  template:
+    src: samba.service.j2
+    dest: /etc/avahi/services/samba.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart avahi-daemon

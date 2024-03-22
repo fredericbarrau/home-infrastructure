@@ -10,3 +10,10 @@
     name: nfs-kernel-server
     state: restarted
 # The handler for the NFS server restart is defined in the handlers/main.yml file of the file_server role.
+
+# Restart the Samba server
+- name: restart samba
+  service:
+    name: smbd
+    state: restarted
+# The handler for the Samba server restart is defined in the handlers/main.yml file of the file_server role.

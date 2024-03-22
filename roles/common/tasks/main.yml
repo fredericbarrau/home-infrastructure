@@ -16,8 +16,10 @@
     - avahi-daemon # bonjour for ubuntu
     - ca-certificates
     - curl
-    - software-properties-common
+    - hfsprogs # HFS+ filesystem utilities
     - logrotate
+    - pm-utils # power management utilities
+    - software-properties-common
     - unattended-upgrades
 
 - name: Configure the timezone
