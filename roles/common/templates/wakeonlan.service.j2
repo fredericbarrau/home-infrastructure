@@ -1,0 +1,13 @@
+[Unit]
+Description=Enable Wake-on-LAN
+After=network.target
+
+[Service]
+Type=oneshot
+
+{# Setup the wake on lan on the first ethernet interface, using ansible facts and jinja templating #}
+ExecStart=/sbin/ethtool -s {{ interface }} wol g
+
+
+[Install]
+WantedBy=basic.target

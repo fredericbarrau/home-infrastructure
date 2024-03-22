@@ -16,6 +16,7 @@
     - avahi-daemon # bonjour for ubuntu
     - ca-certificates
     - curl
+    - ethtool
     - hfsprogs # HFS+ filesystem utilities
     - logrotate
     - pm-utils # power management utilities
@@ -48,3 +49,26 @@
     group: root
     mode: 0644
   notify: restart avahi-daemon
+
+# Configure the wake on lan systemd service for each ethernet card
+- name: Configure the wake on lan feature
+  template:
+    src: wakeonlan.service.j2
+    dest: "/etc/systemd/system/wakeonlan-{{ item }}.service"
+    owner: root
+    group: root
+    mode: 0644
+  vars:
+    interface: "{{ item }}"
+  notify: restart wakeonlan
+  with_items: "{{ ansible_interfaces |map('regex_search', '^(enp|ens|eth).*$')|select('string') }}"
+  when: ansible_interfaces is defined and ansible_interfaces | length > 0
+
+- name: Configure the wake on lan systemd service
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    name: "wakeonlan-{{item}}"
+    state: started
+  with_items: "{{ ansible_interfaces |map('regex_search', '^(enp|ens|eth).*$')|select('string') }}"
+  when: ansible_interfaces is defined and ansible_interfaces | length > 0

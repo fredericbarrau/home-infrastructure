@@ -12,3 +12,9 @@
   service:
     name: systemd-hostnamed
     state: restarted
+
+# Restart wakeonlan
+- name: restart wakeonlan
+  service:
+    name: wakeonlan
+    state: restarted
