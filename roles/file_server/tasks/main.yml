@@ -76,3 +76,11 @@
     group: root
     mode: 0644
   notify: restart avahi-daemon
+
+# Install Web Service for Device (will allow this server to show up in the network from Windows 10+ machines)
+- name: WSD - Install the necessary packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - wsdd
