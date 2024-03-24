@@ -66,6 +66,7 @@
 # not protected by a firewall or is a firewall itself.  However, this
 # option cannot handle dynamic or non-broadcast interfaces correctly.
 ;   bind interfaces only = yes
+   bind interfaces only = yes
 
 
 #### Debugging/Accounting ####
@@ -272,6 +273,11 @@
    guest ok = yes
    read only = no
    create mask = 0755
+   # Optimisation for share with large number of files
+   case sensitive = true
+   default case = lower
+   preserve case = no
+   short preserve case = no
 
 [TimeCapsule-Macbook-Estelle]
    # Load in modules (order is critical!)
@@ -284,6 +290,11 @@
    guest ok = yes
    read only = no
    create mask = 0755
+   # Optimisation for share with large number of files
+   case sensitive = true
+   default case = lower
+   preserve case = no
+   short preserve case = no
 
 [GamesBackup]
    # Load in modules (order is critical!)

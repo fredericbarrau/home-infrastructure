@@ -27,8 +27,10 @@ host-name={{ hostname }}
 use-ipv4=yes
 use-ipv6=yes
 #allow-interfaces=eth0
-allow-interfaces={{ ansible_interfaces | sort | join(',') }}
-#deny-interfaces=eth1
+# Restrict on ethernet interfaces
+# allow-interfaces={{ ansible_interfaces |map('regex_search', '^(enp|ens|eth).*$')|select('string')|join(' ') }}
+# Deny wifi interfaces
+deny-interfaces={{ ansible_interfaces |map('regex_search', '^(wlp).*$')|select('string')|join(' ') }}
 #check-response-ttl=no
 #use-iff-running=no
 #enable-dbus=yes
@@ -38,8 +40,8 @@ allow-interfaces={{ ansible_interfaces | sort | join(',') }}
 #clients-max=4096
 #objects-per-client-max=1024
 #entries-per-entry-group-max=32
-ratelimit-interval-usec=1000000
-ratelimit-burst=1000
+# ratelimit-interval-usec=1000000
+# ratelimit-burst=1000
 
 [wide-area]
 enable-wide-area=yes
