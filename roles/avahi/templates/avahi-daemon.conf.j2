@@ -26,11 +26,10 @@ host-name={{ hostname }}
 #browse-domains=0pointer.de, zeroconf.org
 use-ipv4=yes
 use-ipv6=yes
-#allow-interfaces=eth0
-# Restrict on ethernet interfaces
-# allow-interfaces={{ ansible_interfaces |map('regex_search', '^(enp|ens|eth).*$')|select('string')|join(' ') }}
+# Restrict on avahi interfaces
+allow-interfaces={{ avahi_interfaces |join(' ') }}
 # Deny wifi interfaces
-deny-interfaces={{ ansible_interfaces |map('regex_search', '^(wlp).*$')|select('string')|join(' ') }}
+# deny-interfaces={{ ansible_interfaces |map('regex_search', '^(wlp).*$')|select('string')|join(' ') }}
 #check-response-ttl=no
 #use-iff-running=no
 #enable-dbus=yes

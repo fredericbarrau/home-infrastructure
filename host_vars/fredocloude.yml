@@ -14,3 +14,6 @@ nfs_dirs:
 # The samba users
 samba_users:
   - fredericbarrau
+
+avahi_interfaces: 
+  - enp1s6

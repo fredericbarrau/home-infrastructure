@@ -76,29 +76,6 @@
       - wsdd
     state: present
 
-# The following will:
-# - install the necessary packages for avahi
-# - copy the avahi-daemon.conf file to the avahi server
-
-- name: Install the necessary packages for avahi
-  apt:
-    name:
-      - avahi-daemon
-      - avahi-utils
-    state: present
-  register: avahi_install_result
-
-
-# Configure avahi-daemon (Apple Bonjour for Ubuntu)
-- name: Configure avahi-daemon
-  template:
-    src: avahi-daemon.conf.j2
-    dest: /etc/avahi/avahi-daemon.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify: restart avahi-daemon
-
 # Avahi configuration for samba
 
 - name: Copy the avahi configuration file for samba

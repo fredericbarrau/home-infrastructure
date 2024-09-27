@@ -4,6 +4,7 @@
 - hosts: file_server
   become: True
   roles:
+    - avahi
     - common
     - file_server
     - monitoring
@@ -14,5 +15,7 @@
 - hosts: dns_pihole_server
   become: True
   roles:
+    - avahi
+    - airplay
     - common
     - pihole

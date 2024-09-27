@@ -1,0 +1,31 @@
+# Install uxplay from repository
+- name: Install uxplay and dependencies
+  apt:
+    name:
+      - uxplay
+      - alsa-utils
+      - gstreamer1.0-plugins-base
+      - gstreamer1.0-plugins-good
+      - gstreamer1.0-plugins-bad
+      - gstreamer1.0-alsa
+      - gstreamer1.0-libav
+    state: present
+    update_cache: yes
+
+# Copy the uxplay.service configuration file for the service
+- name: Copy the uxplay service configuration file
+  copy:
+    src: uxplay.service
+    dest: /etc/systemd/system/uxplay.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart uxplay
+
+# Start the uxplay service
+- name: Start the uxplay service
+  service:
+    name: uxplay
+    state: started
+    enabled: yes
+

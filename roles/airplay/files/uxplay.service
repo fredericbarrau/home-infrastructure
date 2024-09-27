@@ -1,0 +1,12 @@
+# Systemd service file for uxplay
+[Unit]
+Description=Airplay compatible service
+Wants=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/uxplay -n "Airplay enceintes Salle" -nh -vs 0
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
