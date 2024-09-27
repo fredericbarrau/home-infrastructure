@@ -1,0 +1,49 @@
+# Remove the systemd-resolved package:
+- name: Remove the systemd-resolved package
+  package:
+    name: systemd-resolved
+    state: absent
+  register: remove_systemd_resolved
+
+# No systemd-resolved package is installed: we need to configure the DNS resolver
+- name: Configure the DNS resolver
+  copy:
+    content: |
+      # Managed by Ansible
+      # filename: /etc/resolv.conf
+      nameserver 10.0.0.1
+      search .local
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: 0644
+
+# Create subfolders for storing persitent configuration files of dnsmasq and pihole
+
+- name: Create the pihole directories for docker compose file
+  ansible.builtin.file:
+    dest: "{{ item }}"
+    state: directory
+    mode: 0755
+  loop:
+    - /var/lib/pihole-docker
+
+- name: Copy the docker-compose file for pihole
+  template:
+    src: docker-compose.yml.j2
+    dest: /var/lib/pihole-docker/docker-compose.yml
+    owner: root
+    group: docker
+    mode: 0640
+
+    # Deploy the monitoring stack using docker compose
+- name: Deploy the pihole stack using docker compose
+  community.docker.docker_compose_v2:
+    project_src: /var/lib/pihole-docker/
+    state: present
+    build: policy
+    pull: missing
+    recreate: auto
+    remove_orphans: yes
+    timeout: 300
+    project_name: pihole

@@ -10,9 +10,9 @@
     - wake-on-lan
 
 # Playbook for dns/pihole server:
-# # ---
-# - hosts: dns_pihole_server
-#   become: True
-#   roles:
-#     - common
-#     - pihole
+# ---
+- hosts: dns_pihole_server
+  become: True
+  roles:
+    - common
+    - pihole
