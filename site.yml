@@ -6,3 +6,4 @@
   roles:
     - common
     - file_server
+    - monitoring

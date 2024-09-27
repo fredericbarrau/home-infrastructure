@@ -1,0 +1,60 @@
+# Copy the directory files/prometheus-grafana to the /etc/ansible/roles/monitoring/files directory.
+
+# Path: roles/monitoring/tasks/main.yaml
+
+# Create the monitoring user
+- name: Create the monitoring user
+  user:
+    name: monitoring
+    state: present
+    shell: /bin/bash
+    home: /var/lib/monitoring
+    createhome: yes
+    # Additional groups
+    groups: docker
+
+# Ensure the /var/ansible/roles/monitoring/files directory exists
+- name: Manage monitoring tree
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: monitoring
+    group: monitoring
+    mode: 0755
+  with_items:
+    - /var/lib/monitoring/docker-compose-stack
+    - /var/lib/monitoring/data
+    - /var/lib/monitoring/data/prometheus
+    - /var/lib/monitoring/data/grafana
+
+- name: Copy the prometheus grafana stack configuration file
+  tags:
+    - compose
+  copy:
+    src: prometheus-grafana
+    dest: /var/lib/monitoring/docker-compose-stack
+    owner: monitoring
+    group: monitoring
+    mode: 0755
+
+# Deploy the monitoring stack using docker compose
+- name: Deploy the monitoring stack using docker compose
+  tags:
+    - compose
+  community.docker.docker_compose_v2:
+    project_src: /var/lib/monitoring/docker-compose-stack/prometheus-grafana
+    state: present
+    build: policy
+    pull: missing
+    recreate: auto
+    remove_orphans: yes
+    timeout: 300
+    project_name: monitoring
+
+# Install node exporter locally (avoid weird docker configuration to get the host metrics)
+- name: Install node exporter
+  tags:
+    - node_exporter
+  apt:
+    name: prometheus-node-exporter
+    state: present

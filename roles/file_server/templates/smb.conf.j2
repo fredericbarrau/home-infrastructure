@@ -41,7 +41,8 @@
    server max protocol = SMB3
    server min protocol = SMB2_02
 
-   server smb encrypt = off
+# Disable server encryption
+   server smb encrypt  = off
 
 ## Browsing/Identification ###
 
@@ -57,6 +58,7 @@
 # This can be either the interface name or an IP address/netmask;
 # interface names are normally preferred
 ;   interfaces = 127.0.0.0/8 eth0
+   interfaces = lo {{ ansible_interfaces |map('regex_search', '^(enp|ens|eth).*$')|select('string')|join(' ') }}
 
 # Only bind to the named interfaces and/or networks; you must use the
 # 'interfaces' option above to use this.
@@ -64,7 +66,7 @@
 # not protected by a firewall or is a firewall itself.  However, this
 # option cannot handle dynamic or non-broadcast interfaces correctly.
 ;   bind interfaces only = yes
-
+   bind interfaces only = yes
 
 
 #### Debugging/Accounting ####
@@ -271,6 +273,11 @@
    guest ok = yes
    read only = no
    create mask = 0755
+   # Optimisation for share with large number of files
+   case sensitive = true
+   default case = lower
+   preserve case = no
+   short preserve case = no
 
 [TimeCapsule-Macbook-Estelle]
    # Load in modules (order is critical!)
@@ -283,6 +290,11 @@
    guest ok = yes
    read only = no
    create mask = 0755
+   # Optimisation for share with large number of files
+   case sensitive = true
+   default case = lower
+   preserve case = no
+   short preserve case = no
 
 [GamesBackup]
    # Load in modules (order is critical!)
