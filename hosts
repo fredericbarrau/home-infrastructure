@@ -1,2 +1,3 @@
 [file_server]
-fredocloude ansible_host=fredocloude.barrau.bzh ansible_user=ansible ansible_ssh_private_key_file=~/.ssh/id_rsa
+#fredocloude ansible_host=fredocloude.barrau.bzh ansible_user=ansible ansible_ssh_private_key_file=~/.ssh/id_rsa_home
+fredocloude ansible_host=10.0.0.40 ansible_user=ansible ansible_ssh_private_key_file=~/.ssh/id_rsa_home

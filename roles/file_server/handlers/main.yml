@@ -4,6 +4,12 @@
 # The handler is a task that will be executed only if a task notifies it.
 # The handler is a separate file in the handlers directory.
 
+# handler for avahi daemon restart
+- name: restart avahi-daemon
+  service:
+    name: avahi-daemon
+    state: restarted
+
 # Restart the NFS server
 - name: restart nfs-kernel-server
   service:

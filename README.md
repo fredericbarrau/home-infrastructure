@@ -12,5 +12,6 @@ This project is rather straighforward, and follows the pattern described in Ansi
 ## How ?
 
 ```bash
-ansible-playbook -i hosts site.yml
+ansible-galaxy collection install community.docker
+ANSIBLE_CONFIG=./ansible.cfg ansible-playbook -i hosts site.yml
 ```

@@ -8,13 +8,13 @@
 # - restart the NFS server.
 # - install the necessary packages.
 
-- name: Install the necessary packages
+- name: Install the necessary packages for fileserver
   apt:
-    name: "{{ item }}"
+    name: 
+      - hfsprogs # HFS+ filesystem utilities
+      - nfs-kernel-server
+      - nfs-common
     state: present
-  with_items:
-    - nfs-kernel-server
-    - nfs-common
 
 # Loop over the nfs_dirs variable to create the directories
 - name: Create the NFS directories
@@ -41,13 +41,13 @@
 # - install the necessary packages.
 # - copy the smb.conf file to the Samba server.
 
-- name: Install the necessary packages
+- name: Install the necessary packages for samba
   apt:
-    name: "{{ item }}"
+    name:
+      - samba
+      - samba-common
     state: present
-  with_items:
-    - samba
-    - samba-common
+  register: samba_install_result
 
 # add the users contained in the samba_users variable to the sambashare group
 - name: Add the users to the sambashare group
@@ -55,6 +55,7 @@
     name: "{{ item }}"
     groups: sambashare
     append: yes
+  when: samba_install_result.changed
   with_items:
     - "{{ samba_users }}"
 
@@ -65,22 +66,47 @@
     owner: root
     group: root
     mode: 0644
+  when: samba_install_result.changed    
   notify: restart samba
+
+# Install Web Service for Device (will allow this server to show up in the network from Windows 10+ machines)
+- name: WSD - Install the necessary packages
+  apt:
+    name:
+      - wsdd
+    state: present
+
+# The following will:
+# - install the necessary packages for avahi
+# - copy the avahi-daemon.conf file to the avahi server
+
+- name: Install the necessary packages for avahi
+  apt:
+    name:
+      - avahi-daemon
+      - avahi-utils
+    state: present
+  register: avahi_install_result
+
+
+# Configure avahi-daemon (Apple Bonjour for Ubuntu)
+- name: Configure avahi-daemon
+  template:
+    src: avahi-daemon.conf.j2
+    dest: /etc/avahi/avahi-daemon.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart avahi-daemon
+
 # Avahi configuration for samba
 
-- name: Copy the avahi configuration file
+- name: Copy the avahi configuration file for samba
   template:
     src: samba.service.j2
     dest: /etc/avahi/services/samba.service
     owner: root
     group: root
     mode: 0644
+  when: samba_install_result.changed or avahi_install_result.changed
   notify: restart avahi-daemon
-
-# Install Web Service for Device (will allow this server to show up in the network from Windows 10+ machines)
-- name: WSD - Install the necessary packages
-  apt:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - wsdd

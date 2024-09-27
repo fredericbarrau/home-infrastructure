@@ -1,8 +1,8 @@
 # The handler is a task that will be executed only if a task notifies it.
 # The handler is a separate file in the handlers directory.
 
-# Restart the hostname service
-- name: restart hostname
+# Restart wakeonlan
+- name: restart wakeonlan
   service:
-    name: systemd-hostnamed
+    name: wakeonlan
     state: restarted
