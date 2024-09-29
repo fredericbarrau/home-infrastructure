@@ -19,3 +19,12 @@
     - airplay
     - common
     - pihole
+
+# Playbook for media_center server:
+# ---
+- hosts: media_center_server
+  become: True
+  roles:
+    - avahi
+    - common
+    - wake-on-lan

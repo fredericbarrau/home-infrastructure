@@ -4,9 +4,6 @@
 # The hostname of the host
 hostname: fredocloude
 
-# The timezone of the host
-timezone: Europe/Paris
-
 # The NFS directories to create
 nfs_dirs:
   - /var/nfs

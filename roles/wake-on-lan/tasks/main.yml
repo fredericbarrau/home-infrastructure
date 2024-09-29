@@ -4,21 +4,6 @@
       - pm-utils # power management utilities
     state: present
 
-- name: Install the necessary packages
-  apt:
-    name:
-      - apt-transport-https
-      - avahi-daemon # bonjour for ubuntu
-      - ca-certificates
-      - curl
-      - docker.io
-      - docker-compose-v2
-      - ethtool
-      - logrotate
-      - software-properties-common
-      - unattended-upgrades
-    state: present
-
 # Configure the wake on lan systemd service for each ethernet card
 - name: Configure the wake on lan feature
   template:

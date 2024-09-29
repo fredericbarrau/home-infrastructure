@@ -1,0 +1,9 @@
+# Variables for the host macmini
+# This file is encrypted with ansible-vault
+
+# The hostname of the host
+hostname: macmini
+
+airplay_device_name: "MacMini chambre"
+avahi_interfaces: 
+  - wlp2s0

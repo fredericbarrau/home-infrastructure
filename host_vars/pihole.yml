@@ -4,9 +4,6 @@
 # The hostname of the host
 hostname: pihole
 
-# The timezone of the host
-timezone: Europe/Paris
-
 pihole_password:  !vault |
           $ANSIBLE_VAULT;1.1;AES256
           32636532326536653365396266373633386130336162633765383066313566363866393537343462
@@ -14,3 +11,7 @@ pihole_password:  !vault |
           32313436613964313663303234353731316566386133303232643862326664396239356466313536
           3063346139373238640a666437373966343464613963373733306436323961393761333065326530
           6236
+
+# Configuration for airplay
+airplay_device_name: "Enceintes Salle"
+airplay_only_sound: True

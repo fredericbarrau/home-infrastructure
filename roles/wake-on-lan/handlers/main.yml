@@ -4,5 +4,7 @@
 # Restart wakeonlan
 - name: restart wakeonlan
   service:
-    name: wakeonlan
+    name: wakeonlan-{{item}}
     state: restarted
+  with_items: "{{ ansible_interfaces |map('regex_search', '^(enp|ens|eth).*$')|select('string') }}"
+
