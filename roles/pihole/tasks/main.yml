@@ -24,9 +24,14 @@
   ansible.builtin.file:
     dest: "{{ item }}"
     state: directory
-    mode: 0755
+    owner: root
+    group: docker
+    mode: 0775
   loop:
     - /var/lib/pihole-docker
+    - /var/log/pihole
+  register: pihole_directories
+
 
 - name: Copy the docker-compose file for pihole
   template:
