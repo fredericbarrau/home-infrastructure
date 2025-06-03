@@ -4,6 +4,9 @@
     name: systemd-resolved
     state: absent
   register: remove_systemd_resolved
+  tags:
+    - pihole
+
 
 # No systemd-resolved package is installed: we need to configure the DNS resolver
 - name: Configure the DNS resolver
@@ -17,6 +20,9 @@
     owner: root
     group: root
     mode: 0644
+  tags:
+    - pihole
+
 
 # Create subfolders for storing persitent configuration files of dnsmasq and pihole
 
@@ -31,6 +37,8 @@
     - /var/lib/pihole-docker
     - /var/log/pihole
   register: pihole_directories
+  tags:
+    - pihole
 
 
 - name: Copy the docker-compose file for pihole
@@ -40,6 +48,8 @@
     owner: root
     group: docker
     mode: 0640
+  tags:
+    - pihole
 
     # Deploy the monitoring stack using docker compose
 - name: Deploy the pihole stack using docker compose
@@ -52,8 +62,12 @@
     remove_orphans: yes
     timeout: 300
     project_name: pihole
+  tags:
+    - pihole
 
 - name: Install a local DNS cache
   apt:
     name: 
       - nscd
+  tags:
+    - pihole
