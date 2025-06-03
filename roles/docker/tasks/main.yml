@@ -1,0 +1,46 @@
+- name: OS markers
+  debug:
+    msg: >-
+      Distrib: {{ ansible_distribution | lower }} - Version: {{ ansible_distribution_major_version }} - Arch: {{ ansible_architecture | lower }}
+    verbosity: 0
+
+- name: Load os-specific vars
+  include_vars: "{{ _current_os_vars }}"
+  with_first_found:
+    - skip: true
+      files:
+        - "{{ ansible_distribution | lower }}_{{ ansible_distribution_major_version }}_{{ ansible_architecture | lower }}.yml"
+        - "{{ ansible_distribution | lower }}_{{ ansible_architecture | lower }}.yml"
+        - "{{ ansible_distribution | lower }}_{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    loop_var: _current_os_vars
+
+- name: Execute os-specific tasks
+  include_tasks: "{{ _current_os_tasks }}"
+  with_first_found:
+    - skip: true
+      files:
+        - "{{ ansible_distribution | lower }}_{{ ansible_distribution_major_version }}_{{ ansible_architecture | lower }}/main.yml"
+        - "{{ ansible_distribution | lower }}_{{ ansible_architecture | lower }}/main.yml"
+        - "{{ ansible_distribution | lower }}_{{ ansible_distribution_major_version }}/main.yml"
+        - "{{ ansible_distribution | lower }}/main.yml"
+  loop_control:
+    loop_var: _current_os_tasks
+
+###############################################################################
+- name: Remove unofficial Docker packages
+  apt:
+    name: "{{ docker_unofficial_packages }}"
+    state: absent
+  when: docker_unofficial_packages is defined and docker_unofficial_packages | length > 0 
+
+- name: Install the necessary packages for docker
+  apt:
+    name: "{{ docker_packages }}"
+    update_cache: true
+  when: docker_packages is defined and docker_packages | length > 0 
+  notify:
+    - restart docker-daemon
+  

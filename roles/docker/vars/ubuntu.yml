@@ -1,0 +1,16 @@
+docker_packages:
+ - docker-ce
+ - docker-ce-cli
+ - containerd.io
+ - docker-buildx-plugin
+ - docker-compose-plugin
+
+docker_unofficial_packages:
+  - containerd
+  - docker-compose
+  - docker-compose-v2
+  - docker-doc
+  - docker.io
+  - podman-docker
+  - podman-docker
+  - runc

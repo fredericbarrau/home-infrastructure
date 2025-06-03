@@ -6,6 +6,7 @@
   roles:
     - avahi
     - common
+    - docker
     - file_server
     - monitoring
     - wake-on-lan
@@ -18,6 +19,7 @@
     - avahi
     - airplay
     - common
+    - docker
     - pihole
 
 # Playbook for media_center server:

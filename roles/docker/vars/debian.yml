@@ -1,0 +1,12 @@
+docker_packages:
+ - docker-ce:armhf 
+ - docker-ce-cli:armhf 
+ - containerd.io:armhf 
+ - docker-buildx-plugin:armhf 
+ - docker-compose-plugin:armhf 
+
+docker_unofficial_packages:
+  - docker.io
+  - docker-compose
+  - docker-doc
+  - podman-docker

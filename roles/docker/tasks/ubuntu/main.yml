@@ -1,0 +1,12 @@
+- name: Install Docker on Debian
+  block:
+  - name: Add Docker Apt key
+    ansible.builtin.get_url:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      dest: /etc/apt/keyrings/docker.asc
+
+  - name: Add Docker Apt repository
+    ansible.builtin.apt_repository:
+      repo: "deb [arch={{ ansible_architecture | lower }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release | lower }} stable"
+      state: present
+      filename: docker
