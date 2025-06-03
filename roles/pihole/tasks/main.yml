@@ -52,3 +52,8 @@
     remove_orphans: yes
     timeout: 300
     project_name: pihole
+
+- name: Install a local DNS cache
+  apt:
+    name: 
+      - nscd
