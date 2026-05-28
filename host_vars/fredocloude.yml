@@ -2,7 +2,7 @@
 # This file is encrypted with ansible-vault
 
 # The hostname of the host
-hostname: fredocloude
+common_hostname: fredocloude
 
 # The NFS directories to create
 nfs_dirs:

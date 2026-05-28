@@ -21,11 +21,11 @@
 
 - name: Configure the timezone
   timezone:
-    name: "{{ timezone }}"
+    name: "{{ common_timezone }}"
 
 - name: Configure the hostname
   hostname:
-    name: "{{ hostname }}"
+    name: "{{ common_hostname }}"
   notify: restart hostname
 
 - name: Configure the unattended-upgrades
@@ -35,3 +35,8 @@
     owner: root
     group: root
     mode: 0644
+
+- name: Install custom packages
+  apt:
+    name: "{{ common_custom_packages }}"
+    state: present

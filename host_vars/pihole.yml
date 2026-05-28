@@ -2,7 +2,7 @@
 # This file is encrypted with ansible-vault
 
 # The hostname of the host
-hostname: pihole
+common_hostname: pihole
 
 pihole_password:  !vault |
           $ANSIBLE_VAULT;1.1;AES256
