@@ -9,3 +9,4 @@ common_custom_packages:
 airplay_device_name: "MacMini chambre"
 avahi_interfaces: 
   - wlp2s0
+
