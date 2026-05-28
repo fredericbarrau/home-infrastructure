@@ -3,8 +3,6 @@
 
 # The hostname of the host
 common_hostname: macmini
-common_custom_packages:
-  - openjdk-21-jre-headless
 
 airplay_device_name: "MacMini chambre"
 avahi_interfaces: 

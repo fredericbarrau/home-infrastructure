@@ -29,4 +29,5 @@
   roles:
     - avahi
     - common
+    - minecraft
     - wake-on-lan

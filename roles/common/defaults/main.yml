@@ -1,2 +1,3 @@
 # The timezone of the host
 common_timezone: Europe/Paris
+common_custom_packages: []

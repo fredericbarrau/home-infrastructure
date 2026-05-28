@@ -1,0 +1,61 @@
+
+# Create the minecraft user
+- name: Create the minecraft user
+  user:
+    name: minecraft
+    state: present
+    shell: /bin/bash
+    home: /var/lib/minecraft
+    createhome: yes
+
+
+# Create the server directory
+- name: Create the server directory
+  file:
+    path: /var/lib/minecraft/server
+    state: directory
+    owner: minecraft
+    group: minecraft
+    mode: 0755
+
+# Download the minecraft server file 
+- name: Download the java server file
+  get_url:
+    dest: /var/lib/minecraft/server/server.jar
+    owner: minecraft
+    group: minecraft
+    url: "{{ minecraft_server_url }}"
+
+- name: Setup the static configuration files
+  copy:
+    src: configuration-files/
+    dest: /var/lib/minecraft/server
+    owner: minecraft
+    group: minecraft
+    mode: 0644
+  notify: restart minecraft-server
+
+- name: Setup the server.properties configuration file
+  template:
+    dest: /var/lib/minecraft/server/server.properties
+    src: configuration-files/server.properties.j2
+    owner: minecraft
+    group: minecraft
+    mode: 0644
+  notify: restart minecraft-server
+
+# Setup the service
+- name: Setup the service file
+  template:
+    dest: /etc/systemd/system/minecraft-server.service
+    src: service/minecraft-server.service.j2
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart minecraft-server
+
+# Add screen package for local administration
+- name: Add packages for minecraft management
+  apt:
+    name: "{{ minecraft_packages }}"
+    state: present
