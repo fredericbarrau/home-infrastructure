@@ -1,0 +1,4 @@
+---
+collections:
+  - name: vladgh.samba
+    version: ">=3.5.6"

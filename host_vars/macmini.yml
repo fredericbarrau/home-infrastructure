@@ -8,3 +8,21 @@ airplay_device_name: "MacMini chambre"
 avahi_interfaces: 
   - wlp2s0
 
+
+samba_server_string: "MacMini server"
+samba_shares:
+  - name: minecraft
+    comment: Fichiers minecraft server
+    path: /var/lib/minecraft/server
+    browsable: yes
+    writable: yes
+    guest ok: yes
+    read only: no
+    create mask: 0755
+    public: yes
+    user: minecraft
+    group: minecraft
+
+samba_users:
+  - name: minecraft
+    password: minecraft

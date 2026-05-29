@@ -7,7 +7,7 @@
     shell: /bin/bash
     home: /var/lib/minecraft
     createhome: yes
-
+    password: "$6$yt9cf97E69/99Wjj$qMHmINcQDUMeMcausG8kfzVz0JY9UZOqGEnEpWYCqDvmP7XCfZVej6Z6VnJLQfaN2OZ/Bgwe.m1J9M3r2vkTy0"
 
 # Create the server directory
 - name: Create the server directory

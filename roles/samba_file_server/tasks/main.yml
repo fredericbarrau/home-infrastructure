@@ -1,0 +1,24 @@
+---
+
+# Install Web Service for Device (will allow this server to show up in the network from Windows 10+ machines)
+- name: WSD - Install the necessary packages
+  apt:
+    name:
+      - wsdd
+    state: present
+
+# Setup the service
+- name: Setup the wsdd service file
+  copy:
+    dest: /etc/systemd/system/wsdd.service
+    src: wsdd.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart wsdd
+
+- name: Configure wsdd service
+  service:
+    enabled: True
+    name: wsdd
+    state: started

@@ -7,7 +7,8 @@
     - avahi
     - common
     - docker
-    - file_server
+    - nfs_file_server
+    - samba_file_server
     - monitoring
     - wake-on-lan
 
@@ -29,5 +30,10 @@
   roles:
     - avahi
     - common
+    - samba_file_server
     - minecraft
     - wake-on-lan
+  tasks:
+    - name: Include Samba Server role
+      ansible.builtin.include_role:
+        name: vladgh.samba.server
