@@ -54,6 +54,12 @@
     mode: 0644
   notify: restart minecraft-server
 
+- name: Configure minecraft-server service
+  service:
+    enabled: True
+    name: minecraft-server
+    state: started
+
 # Add screen package for local administration
 - name: Add packages for minecraft management
   apt:
