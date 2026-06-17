@@ -12,6 +12,8 @@ This project is rather straighforward, and follows the pattern described in Ansi
 ## How ?
 
 ```bash
-ansible-galaxy collection install community.docker
+# Get the required external collections
+ansible-galaxy collection install -r requirements.yml
+# Run 
 ANSIBLE_CONFIG=./ansible.cfg ansible-playbook -i hosts site.yml
 ```
