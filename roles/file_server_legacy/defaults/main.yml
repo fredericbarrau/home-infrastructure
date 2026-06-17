@@ -1,5 +1,0 @@
-nfs_dirs:
-  - /var/nfs
-
-# Samba users
-samba_users: []

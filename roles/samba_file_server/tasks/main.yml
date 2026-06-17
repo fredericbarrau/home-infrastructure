@@ -23,4 +23,15 @@
     name: wsdd
     state: started
 
+# Avahi configuration for samba
+
+- name: Copy the avahi configuration file for samba
+  template:
+    src: samba.service.j2
+    dest: /etc/avahi/services/samba.service
+    owner: root
+    group: root
+    mode: 0644
+  when: samba_install_result.changed or avahi_install_result.changed
+  notify: restart avahi-daemon
 
