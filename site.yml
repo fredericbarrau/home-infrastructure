@@ -11,6 +11,37 @@
     - samba_file_server
     - monitoring
     - wake-on-lan
+    - geerlingguy.mysql
+    - pterodactyl
+  tasks:
+    - name: Install Pterodactyl Panel
+      include_role:
+        name: maxhoesel.pterodactyl.pterodactyl_panel
+      # pterodactyl_panel supports additional options, see it's README for more details.
+      vars:
+        pterodactyl_panel_app_key: base64:7qTrSglChckmSi3o+IZ8vJTQShsdiE3cJ0Vc4wicsiI=
+        pterodactyl_panel_hashids_salt: hnpbfmz4puG5zXFIgKHO
+        # The timezone in which the panel should operate
+        pterodactyl_panel_timezone: Europe/Paris
+        # DB settings. Make sure that the database + user already exist and are accessible
+        pterodactyl_panel_db_host: "127.0.0.1"
+        pterodactyl_panel_db_name: panel
+        pterodactyl_panel_db_user: pterodactyl
+        pterodactyl_panel_db_password: pterodactyl
+        # Paths to the certificate. This defaults to the Let's Encrypt directory for your hosts domain name
+        pterodactyl_panel_ssl_cert: "/etc/ssl/certs/pterodactyl.barrau.bzh.crt"
+        pterodactyl_panel_ssl_key: "/etc/ssl/private/pterodactyl.barrau.bzh.pem"
+        pterodactyl_panel_ssl_mode: selfsign
+        # Mail server settings.
+        # pterodactyl_panel_mail_host: smtp.gmail.com
+        # pterodactyl_panel_mail_user: your-address@gmail.com
+        # pterodactyl_panel_mail_password: your-mail-password
+        # pterodactyl_panel_mail_encryption: tls
+        # By default, the role will create a user with the credentials admin/admin.
+        # You can change these values below or in the UI once the panel is up and running
+        pterodactyl_panel_admin_mail: "frederic.barrau@gmail.com"
+        #pterodactyl_panel_admin_user: admin
+        #pterodactyl_panel_admin_password: admin
 
 # Playbook for dns/pihole server:
 # ---
