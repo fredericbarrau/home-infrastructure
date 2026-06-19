@@ -32,6 +32,5 @@
     owner: root
     group: root
     mode: 0644
-  when: samba_install_result.changed or avahi_install_result.changed
   notify: restart avahi-daemon
 

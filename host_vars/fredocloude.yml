@@ -12,5 +12,36 @@ nfs_dirs:
 samba_users:
   - fredericbarrau
 
+samba_server_string: "Fredocloude server"
+samba_shares:
+  - name: games
+    comment: Game files
+    path: /mnt/GamesBackup
+    browsable: yes
+    writable: yes
+    guest ok: yes
+    read only: no
+    create mask: 0755
+    public: yes
+  - name: timemachine_1
+    comment: Time Machine Backup 1
+    path: /mnt/TimeMachine_1
+    browsable: yes
+    writable: yes
+    guest ok: yes
+    read only: no
+    create mask: 0755
+    public: yes
+  - name: timemachine_2
+    comment: Time Machine Backup 2
+    path: /mnt/TimeMachine_2
+    browsable: yes
+    writable: yes
+    guest ok: yes
+    read only: no
+    create mask: 0755
+    public: yes
+
+
 avahi_interfaces: 
   - enp1s6
