@@ -7,6 +7,7 @@ collections:
   - name: maxhoesel.pterodactyl
     version: ">=5.0.0"
   - name: community.crypto
+  - name: ansible.posix
 roles:
   - name: geerlingguy.mysql
-    version: ">=6.4.0"
+    version: "6.4.0"
