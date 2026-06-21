@@ -1,0 +1,16 @@
+- name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
+  community.crypto.openssl_privatekey:
+    path: "/etc/ssl/private/{{ self_signed_cert_domain }}.pem"
+
+- name: Generate an OpenSSL Certificate Signing Request
+  community.crypto.openssl_csr:
+    path: "/etc/ssl/private/{{ self_signed_cert_domain }}.csr"
+    privatekey_path: "/etc/ssl/private/{{ self_signed_cert_domain }}.pem"
+    common_name: "{{ self_signed_cert_domain }}"
+
+- name: Generate a Self Signed OpenSSL certificate
+  community.crypto.x509_certificate:
+    path: "/etc/ssl/certs/{{ self_signed_cert_domain }}.crt"
+    privatekey_path: "/etc/ssl/private/{{ self_signed_cert_domain }}.pem"
+    csr_path: "/etc/ssl/private/{{ self_signed_cert_domain }}.csr"
+    provider: selfsigned

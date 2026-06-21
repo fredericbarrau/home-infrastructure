@@ -12,7 +12,16 @@
     - monitoring
     - wake-on-lan
     - geerlingguy.mysql
-    - pterodactyl
+    - self_signed_cert
+    - role: maxhoesel.pterodactyl.pterodactyl_wings
+      vars:
+        pterodactyl_wings_config:
+          api:
+            ssl:
+              enabled: true
+              cert: "/etc/ssl/certs/{{ ansible_facts['fqdn'] }}.crt"
+              key: "/etc/ssl/private/{{ ansible_facts['fqdn'] }}.pem"
+
   tasks:
     - name: Install Pterodactyl Panel
       include_role:
@@ -63,6 +72,7 @@
     - common
     - samba_file_server
     - minecraft
+    - self_signed_cert
     - wake-on-lan
   tasks:
     - name: Include Samba Server role

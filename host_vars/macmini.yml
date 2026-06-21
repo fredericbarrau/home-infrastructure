@@ -26,3 +26,6 @@ samba_shares:
 samba_users:
   - name: minecraft
     password: minecraft
+
+# Self signed
+self_signed_cert_domain: macmini.barrau.bzh
