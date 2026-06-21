@@ -16,11 +16,24 @@
     - role: maxhoesel.pterodactyl.pterodactyl_wings
       vars:
         pterodactyl_wings_config:
+          # Wing Ids
+          uuid: b832f488-b83b-48fd-b9e1-2db17bf8d295
+          token_id: wvzJ7NJoCT1hKft1
+          token: 3ZKNuvhYyJhpyXgM7tdkf5m7QE8fO8DXxCQqrHIcWdvilde7KCoxa5JCwLZB2ec1
+          remote: https://pterodactyl.barrau.bzh
           api:
+            host: 0.0.0.0
+            port: 8080
             ssl:
               enabled: true
               cert: "/etc/ssl/certs/{{ ansible_facts['fqdn'] }}.crt"
               key: "/etc/ssl/private/{{ ansible_facts['fqdn'] }}.pem"
+            upload_limit: 100
+          system:
+            data: /var/lib/pterodactyl/volumes
+            sftp:
+              bind_port: 2022
+          allowed_mounts: []
 
   tasks:
     - name: Install Pterodactyl Panel

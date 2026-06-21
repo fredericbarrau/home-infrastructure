@@ -64,12 +64,10 @@ mysql_packages:
   - mariadb-server
 mysql_daemon: mariadb
 
-# Wing Ids
-pterodactyl_wings_uuid: b832f488-b83b-48fd-b9e1-2db17bf8d295
-pterodactyl_wings_token_id: wvzJ7NJoCT1hKft1
-pterodactyl_wings_token: 3ZKNuvhYyJhpyXgM7tdkf5m7QE8fO8DXxCQqrHIcWdvilde7KCoxa5JCwLZB2ec1
-pterodactyl_wings_remote: https://pterodactyl.barrau.bzh
+#Wings
 pterodactyl_wings_docker_install: false
 
 # Self Signed
-self_signed_cert_domain: pterodactyl.barrau.bzh
+self_signed_cert_domains: 
+  - pterodactyl.barrau.bzh
+  - "{{ ansible_facts['fqdn'] }}"

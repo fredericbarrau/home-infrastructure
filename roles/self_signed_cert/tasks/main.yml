@@ -1,16 +1,31 @@
 - name: Generate an OpenSSL private key with the default values (4096 bits, RSA)
   community.crypto.openssl_privatekey:
-    path: "/etc/ssl/private/{{ self_signed_cert_domain }}.pem"
+    path: "/etc/ssl/private/{{ item }}.pem"
+  with_items: "{{ self_signed_cert_domains }}"
+  tags:
+    - self_signed_cert
 
 - name: Generate an OpenSSL Certificate Signing Request
   community.crypto.openssl_csr:
-    path: "/etc/ssl/private/{{ self_signed_cert_domain }}.csr"
-    privatekey_path: "/etc/ssl/private/{{ self_signed_cert_domain }}.pem"
-    common_name: "{{ self_signed_cert_domain }}"
+    path: "/etc/ssl/private/{{ item }}.csr"
+    privatekey_path: "/etc/ssl/private/{{ item }}.pem"
+    common_name: "{{ item }}"
+  with_items: "{{ self_signed_cert_domains }}"
+  tags:
+    - self_signed_cert
 
 - name: Generate a Self Signed OpenSSL certificate
   community.crypto.x509_certificate:
-    path: "/etc/ssl/certs/{{ self_signed_cert_domain }}.crt"
-    privatekey_path: "/etc/ssl/private/{{ self_signed_cert_domain }}.pem"
-    csr_path: "/etc/ssl/private/{{ self_signed_cert_domain }}.csr"
+    path: "/usr/local/share/ca-certificates/{{ item }}.crt"
+    privatekey_path: "/etc/ssl/private/{{ item }}.pem"
+    csr_path: "/etc/ssl/private/{{ item }}.csr"
     provider: selfsigned
+  with_items: "{{ self_signed_cert_domains }}"
+  tags:
+    - self_signed_cert
+
+# Update the CA certificates
+- name: Update the CA certificates
+  ansible.builtin.command: update-ca-certificates
+  tags:
+    - self_signed_cert
