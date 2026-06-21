@@ -1,7 +1,7 @@
 - name: OS markers
   debug:
     msg: >-
-      Distrib: {{ ansible_distribution | lower }} - Version: {{ ansible_distribution_major_version }} - Arch: {{ ansible_architecture | lower }}
+      Distrib: {{ ansible_facts['distribution'] | lower }} - Version: {{ ansible_facts['distribution_major_version'] }} - Arch: {{ ansible_facts['architecture'] | lower }}
     verbosity: 0
 
 - name: Load os-specific vars
@@ -9,11 +9,11 @@
   with_first_found:
     - skip: true
       files:
-        - "{{ ansible_distribution | lower }}_{{ ansible_distribution_major_version }}_{{ ansible_architecture | lower }}.yml"
-        - "{{ ansible_distribution | lower }}_{{ ansible_architecture | lower }}.yml"
-        - "{{ ansible_distribution | lower }}_{{ ansible_distribution_major_version }}.yml"
-        - "{{ ansible_distribution | lower }}.yml"
-        - "{{ ansible_os_family | lower }}.yml"
+        - "{{ ansible_facts['distribution'] | lower }}_{{ ansible_facts['distribution_major_version'] }}_{{ ansible_facts['architecture'] | lower }}.yml"
+        - "{{ ansible_facts['distribution'] | lower }}_{{ ansible_facts['architecture'] | lower }}.yml"
+        - "{{ ansible_facts['distribution'] | lower }}_{{ ansible_facts['distribution_major_version'] }}.yml"
+        - "{{ ansible_facts['distribution'] | lower }}.yml"
+        - "{{ ansible_facts['os_family'] | lower }}.yml"
   loop_control:
     loop_var: _current_os_vars
 
@@ -22,10 +22,10 @@
   with_first_found:
     - skip: true
       files:
-        - "{{ ansible_distribution | lower }}_{{ ansible_distribution_major_version }}_{{ ansible_architecture | lower }}/main.yml"
-        - "{{ ansible_distribution | lower }}_{{ ansible_architecture | lower }}/main.yml"
-        - "{{ ansible_distribution | lower }}_{{ ansible_distribution_major_version }}/main.yml"
-        - "{{ ansible_distribution | lower }}/main.yml"
+        - "{{ ansible_facts['distribution'] | lower }}_{{ ansible_facts['distribution_major_version'] }}_{{ ansible_facts['architecture'] | lower }}/main.yml"
+        - "{{ ansible_facts['distribution'] | lower }}_{{ ansible_facts['architecture'] | lower }}/main.yml"
+        - "{{ ansible_facts['distribution'] | lower }}_{{ ansible_facts['distribution_major_version'] }}/main.yml"
+        - "{{ ansible_facts['distribution'] | lower }}/main.yml"
   loop_control:
     loop_var: _current_os_tasks
 
