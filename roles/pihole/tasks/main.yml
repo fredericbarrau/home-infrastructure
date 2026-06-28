@@ -7,7 +7,6 @@
   tags:
     - pihole
 
-
 # No systemd-resolved package is installed: we need to configure the DNS resolver
 - name: Configure the DNS resolver
   copy:
@@ -19,49 +18,51 @@
     dest: /etc/resolv.conf
     owner: root
     group: root
-    mode: 0644
+    mode: 0444
   tags:
     - pihole
 
+- name: create the pihole group
+  group:
+    name: pihole
+  tags:
+    - pihole
 
-# Create subfolders for storing persitent configuration files of dnsmasq and pihole
+- name: create the pihole user
+  user:
+    name: pihole
+    state: present
+    shell: /bin/bash
+    createhome: yes
+    group: pihole
+    groups: docker
+  tags:
+    - pihole
 
+# Create subfolders for storing persistent configuration files of dnsmasq and pihole
 - name: Create the pihole directories for docker compose file
   ansible.builtin.file:
     dest: "{{ item }}"
     state: directory
-    owner: root
-    group: docker
+    owner: pihole
+    group: pihole
     mode: 0775
   loop:
+    - /etc/pihole
+    - /etc/dnsmasq.d
     - /var/lib/pihole-docker
     - /var/log/pihole
   register: pihole_directories
   tags:
     - pihole
 
-
 - name: Copy the docker-compose file for pihole
   template:
     src: docker-compose.yml.j2
     dest: /var/lib/pihole-docker/docker-compose.yml
-    owner: root
+    owner: pihole
     group: docker
-    mode: 0640
-  tags:
-    - pihole
-
-    # Deploy the monitoring stack using docker compose
-- name: Deploy the pihole stack using docker compose
-  community.docker.docker_compose_v2:
-    project_src: /var/lib/pihole-docker/
-    state: present
-    build: policy
-    pull: missing
-    recreate: auto
-    remove_orphans: yes
-    timeout: 300
-    project_name: pihole
+    mode: 0440
   tags:
     - pihole
 
@@ -71,3 +72,37 @@
       - nscd
   tags:
     - pihole
+
+# Add a systemd service wrapping the docker compose command to start pihole at boot time
+- name: Copy the pihole systemd service configuration file
+  copy:
+    src: pihole.service
+    dest: /etc/systemd/system/pihole.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    
+  tags:
+    - pihole
+
+# Ensure the pihole self signed CA is empty
+- name: Remove self signed pihole CA
+  ansible.builtin.file:
+    path: /etc/pihole/tls_ca.crt
+    state: absent
+  notify:
+    - restart pihole service
+  tags: 
+    - pihole
+
+# Start and enable the pihole service
+- name: Start and enable the pihole service
+  systemd:
+    name: pihole
+    state: started
+    enabled: yes
+  tags:
+    - pihole
+
+

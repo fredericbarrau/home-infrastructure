@@ -1,0 +1,6 @@
+---
+
+- name: restart pihole service
+  service:
+    name: pihole
+    state: restarted
