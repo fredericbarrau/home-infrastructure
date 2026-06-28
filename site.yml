@@ -1,8 +1,86 @@
+---
 # Playbook for file server
 # ---
 
+- hosts: all
+  become: True
+  roles:
+    - role: maxhoesel.smallstep.step_bootstrap_host
+      vars:
+        step_bootstrap_ca_url: https://pki.barrau.bzh
+        step_bootstrap_fingerprint: b653f61258ffe0b3c646eb338272883ff5b8374ca09a8a49f55c4df6f02adfba
+        step_bootstrap_users:
+          - user: root
+          - user: fredericbarrau
+
+- hosts: wings
+  become: True
+  tasks:
+    # This will download a certificate to /etc/step/ that you can then use in other applications.
+    # See the step_acme_cert README for more options
+    - name: Configure an ACME cert + renewal for fqdn cert
+      ansible.builtin.include_role:
+        name: maxhoesel.smallstep.step_acme_cert
+      vars:
+        step_acme_cert_ca_provisioner: ACME
+        step_acme_cert_name: "{{ ansible_facts['fqdn'] }}"
+        step_acme_cert_duration: 24h
+        step_acme_cert_certfile: 
+          path: /etc/ssl/certs/{{ ansible_facts['fqdn'] }}.crt
+        step_acme_cert_keyfile:
+          path: /etc/ssl/private/{{ ansible_facts['fqdn'] }}.pem
+        step_acme_cert_renewal_service: "step-renew-{{ ansible_facts['fqdn'] }}"
+        step_acme_cert_renewal_reload_services:
+          - wings
+
 - hosts: file_server
   become: True
+  tasks:
+      # This will download a certificate to /etc/step/ that you can then use in other applications.
+      # See the step_acme_cert README for more options
+      - name: Configure an ACME cert + renewal
+        ansible.builtin.include_role:
+          name: maxhoesel.smallstep.step_acme_cert
+        vars:
+          step_acme_cert_ca_provisioner: ACME
+          step_acme_cert_name: pterodactyl.barrau.bzh
+          #step_acme_cert_duration: 24h
+          step_acme_cert_duration: 1h
+          step_acme_cert_certfile: 
+            path: /etc/ssl/certs/pterodactyl.barrau.bzh.crt
+          step_acme_cert_keyfile:
+            path: /etc/ssl/private/pterodactyl.barrau.bzh.pem
+          step_acme_cert_renewal_reload_services:
+            - apache2
+          step_acme_cert_renewal_service: "step-renew-pterodactyl.barrau.bzh"
+      - name: Install Pterodactyl Panel
+        include_role:
+          name: maxhoesel.pterodactyl.pterodactyl_panel
+        # pterodactyl_panel supports additional options, see it's README for more details.
+        vars:
+          pterodactyl_panel_app_key: base64:7qTrSglChckmSi3o+IZ8vJTQShsdiE3cJ0Vc4wicsiI=
+          pterodactyl_panel_hashids_salt: hnpbfmz4puG5zXFIgKHO
+          # The timezone in which the panel should operate
+          pterodactyl_panel_timezone: Europe/Paris
+          # DB settings. Make sure that the database + user already exist and are accessible
+          pterodactyl_panel_db_host: "127.0.0.1"
+          pterodactyl_panel_db_name: panel
+          pterodactyl_panel_db_user: pterodactyl
+          pterodactyl_panel_db_password: pterodactyl
+          # Paths to the certificate. This defaults to the Let's Encrypt directory for your hosts domain name
+          pterodactyl_panel_ssl_cert: "/etc/ssl/certs/pterodactyl.barrau.bzh.crt"
+          pterodactyl_panel_ssl_key: "/etc/ssl/private/pterodactyl.barrau.bzh.pem"
+          pterodactyl_panel_ssl_mode: none
+          # Mail server settings.
+          # pterodactyl_panel_mail_host: smtp.gmail.com
+          # pterodactyl_panel_mail_user: your-address@gmail.com
+          # pterodactyl_panel_mail_password: your-mail-password
+          # pterodactyl_panel_mail_encryption: tls
+          # By default, the role will create a user with the credentials admin/admin.
+          # You can change these values below or in the UI once the panel is up and running
+          pterodactyl_panel_admin_mail: "frederic.barrau@gmail.com"
+          #pterodactyl_panel_admin_user: admin
+          #pterodactyl_panel_admin_password: admin
   roles:
     - avahi
     - common
@@ -33,35 +111,6 @@
             sftp:
               bind_port: 2022
           allowed_mounts: []
-  tasks:
-    - name: Install Pterodactyl Panel
-      include_role:
-        name: maxhoesel.pterodactyl.pterodactyl_panel
-      # pterodactyl_panel supports additional options, see it's README for more details.
-      vars:
-        pterodactyl_panel_app_key: base64:7qTrSglChckmSi3o+IZ8vJTQShsdiE3cJ0Vc4wicsiI=
-        pterodactyl_panel_hashids_salt: hnpbfmz4puG5zXFIgKHO
-        # The timezone in which the panel should operate
-        pterodactyl_panel_timezone: Europe/Paris
-        # DB settings. Make sure that the database + user already exist and are accessible
-        pterodactyl_panel_db_host: "127.0.0.1"
-        pterodactyl_panel_db_name: panel
-        pterodactyl_panel_db_user: pterodactyl
-        pterodactyl_panel_db_password: pterodactyl
-        # Paths to the certificate. This defaults to the Let's Encrypt directory for your hosts domain name
-        pterodactyl_panel_ssl_cert: "/etc/ssl/certs/pterodactyl.barrau.bzh.crt"
-        pterodactyl_panel_ssl_key: "/etc/ssl/private/pterodactyl.barrau.bzh.pem"
-        pterodactyl_panel_ssl_mode: selfsign
-        # Mail server settings.
-        # pterodactyl_panel_mail_host: smtp.gmail.com
-        # pterodactyl_panel_mail_user: your-address@gmail.com
-        # pterodactyl_panel_mail_password: your-mail-password
-        # pterodactyl_panel_mail_encryption: tls
-        # By default, the role will create a user with the credentials admin/admin.
-        # You can change these values below or in the UI once the panel is up and running
-        pterodactyl_panel_admin_mail: "frederic.barrau@gmail.com"
-        #pterodactyl_panel_admin_user: admin
-        #pterodactyl_panel_admin_password: admin
 
 # Playbook for dns/pihole server:
 # ---
@@ -119,10 +168,15 @@
     - name: Include Samba Server role
       ansible.builtin.include_role:
         name: vladgh.samba.server
+    - name: Add an ACME provisioner to the CA
+      maxhoesel.smallstep.step_ca_provisioner:
+        name: ACME
+        type: ACME
+      become_user: step-ca
+      notify: reload step-ca
+  handlers:
+    - name: reload step-ca
+      systemd:
+        name: step-ca
+        state: reloaded
 
-- hosts: all
-  roles:
-    - role: maxhoesel.smallstep.step_bootstrap_host
-      vars:
-        step_bootstrap_ca_url: https://pki.barrau.bzh
-        step_bootstrap_fingerprint: b653f61258ffe0b3c646eb338272883ff5b8374ca09a8a49f55c4df6f02adfba
