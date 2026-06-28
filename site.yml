@@ -129,6 +129,7 @@
   roles:
     - avahi
     - common
+    - docker
     - samba_file_server
     - minecraft
     - root_ca_keycert # Setup the root ca key & cert
@@ -163,6 +164,27 @@
           39643064393032353036323132323636346434383637643863643161376437356338383531353165
           3961383930663231320a636136353863326663626561366364376539393465303032653339653430
           38613465373766383064356534346363386166363230333332336238393936363431
+    - role: maxhoesel.pterodactyl.pterodactyl_wings
+      vars:
+        pterodactyl_wings_config:
+          # Wing Ids
+          uuid: a084b1b9-c4b9-48a6-8d29-ea1e6dc3365e
+          token_id: my8lRfQT1XyYHApn
+          token: u5fJqswld6AJpsSYKO4xFur3Iy63MkhJCOiBy6Dn6gC2eAR3hh64yvBEPPqp3xE7
+          remote: https://pterodactyl.barrau.bzh
+          api:
+            host: 0.0.0.0
+            port: 8080
+            ssl:
+              enabled: true
+              cert: "/etc/ssl/certs/{{ ansible_facts['fqdn'] }}.crt"
+              key: "/etc/ssl/private/{{ ansible_facts['fqdn'] }}.pem"
+            upload_limit: 100
+          system:
+            data: /var/lib/pterodactyl/volumes
+            sftp:
+              bind_port: 2022
+          allowed_mounts: []
     - wake-on-lan
   tasks:
     - name: Include Samba Server role

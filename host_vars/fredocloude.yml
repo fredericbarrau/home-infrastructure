@@ -64,10 +64,6 @@ mysql_packages:
   - mariadb-server
 mysql_daemon: mariadb
 
-#Wings
-pterodactyl_wings_docker_install: false
-
-
 step_bootstrap_users:
   - user: root
   - user: fredericbarrau
