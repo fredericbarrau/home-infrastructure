@@ -66,8 +66,3 @@ mysql_daemon: mariadb
 
 #Wings
 pterodactyl_wings_docker_install: false
-
-# Self Signed
-self_signed_cert_domains: 
-  - pterodactyl.barrau.bzh
-  - "{{ ansible_facts['fqdn'] }}"

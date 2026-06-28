@@ -6,8 +6,11 @@ collections:
     version: ">=5.2.1"
   - name: maxhoesel.pterodactyl
     version: ">=5.0.0"
-  - name: community.crypto
   - name: ansible.posix
+  - name: https://github.com/maxhoesel-ansible/ansible-collection-smallstep.git
+    type: git
+    version: "main"
+    
 roles:
   - name: geerlingguy.mysql
     version: "6.4.0"

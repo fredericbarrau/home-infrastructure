@@ -12,7 +12,6 @@
     - monitoring
     - wake-on-lan
     - geerlingguy.mysql
-    - self_signed_cert
     - role: maxhoesel.pterodactyl.pterodactyl_wings
       vars:
         pterodactyl_wings_config:
@@ -34,7 +33,6 @@
             sftp:
               bind_port: 2022
           allowed_mounts: []
-
   tasks:
     - name: Install Pterodactyl Panel
       include_role:
@@ -85,9 +83,47 @@
     - common
     - samba_file_server
     - minecraft
-    - self_signed_cert
+    - root_ca_keycert # Setup the root ca key & cert
+    - role: maxhoesel.smallstep.step_ca
+      vars:
+        step_ca_name: Barrau's Private CA
+        step_ca_dns: "pki.barrau.bzh,{{ ansible_default_ipv4.address | d('') }},{{ ansible_default_ipv6.address | d('') }}"
+        step_ca_url: "https://pki.barrau.bzh:443"
+        step_ca_root_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          66653666636534313464633937326666646630396135653765613466633066616164333636353162
+          3965323632303232363630373666656163656139623964660a346162326530373639383366633462
+          39643064393032353036323132323636346434383637643863643161376437356338383531353165
+          3961383930663231320a636136353863326663626561366364376539393465303032653339653430
+          38613465373766383064356534346363386166363230333332336238393936363431
+        step_ca_intermediate_name: Barrau's Intermediate CA
+        step_ca_intermediate_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          32636363616136326131313665386532663631316338333963613631303534656439313534336639
+          6536306331363834376639353633656663333930613865320a316634303762666232323434363035
+          32393034366131346239626130386530653366353365373437616265326333633761616337393966
+          3531373262636430340a623734376466326461346263306365383965333735376263316663396631
+          34626362353061623437646532316333656235363166353866636333346337383639
+        step_ca_existing_root: remote
+        step_ca_existing_root_file: /etc/ca/certs/root.cert.pem
+        step_ca_existing_key: remote
+        step_ca_existing_key_file: /etc/ca/private/root.key.pem
+        step_ca_existing_key_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          66653666636534313464633937326666646630396135653765613466633066616164333636353162
+          3965323632303232363630373666656163656139623964660a346162326530373639383366633462
+          39643064393032353036323132323636346434383637643863643161376437356338383531353165
+          3961383930663231320a636136353863326663626561366364376539393465303032653339653430
+          38613465373766383064356534346363386166363230333332336238393936363431
     - wake-on-lan
   tasks:
     - name: Include Samba Server role
       ansible.builtin.include_role:
         name: vladgh.samba.server
+
+- hosts: all
+  roles:
+    - role: maxhoesel.smallstep.step_bootstrap_host
+      vars:
+        step_bootstrap_ca_url: https://pki.barrau.bzh
+        step_bootstrap_fingerprint: b653f61258ffe0b3c646eb338272883ff5b8374ca09a8a49f55c4df6f02adfba

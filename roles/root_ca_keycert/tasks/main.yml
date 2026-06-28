@@ -1,0 +1,42 @@
+---
+# Using a root CA key and cert encrypted using ansible vault
+
+# Creating the root CA directory
+- name: Create the root CA directories
+  ansible.builtin.file:
+    path: "{{item}}"
+    state: directory
+    mode: 0750
+    owner: root
+    group: "{{ root_ca_keycert_group }}"
+  with_items:
+    - "/etc/ca"
+    - "/etc/ca/certs"
+    - "/etc/ca/crl"
+    - "/etc/ca/newcerts"
+    - "/etc/ca/private"
+
+# Copy the Root CA CSR
+- name: Copy the root CA CSR
+  copy:
+    dest: /etc/ca/root.csr
+    src: root.csr
+    owner: root
+    group: "{{ root_ca_keycert_group }}"
+    mode: 0640
+
+- name: Copy the root CA Key
+  template:
+    dest: /etc/ca/private/root.key.pem
+    src: root.key.pem
+    owner: root
+    group: "{{ root_ca_keycert_group }}"
+    mode: 0640
+
+- name: Copy the root CA Cert
+  template:
+    dest: /etc/ca/certs/root.cert.pem
+    src: root.cert.pem
+    owner: root
+    group: "{{ root_ca_keycert_group }}"
+    mode: 0640

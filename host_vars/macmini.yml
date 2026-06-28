@@ -27,5 +27,4 @@ samba_users:
   - name: minecraft
     password: minecraft
 
-# Self signed
-self_signed_cert_domain: macmini.barrau.bzh
+root_ca_keycert_group: "{{ step_ca_user }}"
